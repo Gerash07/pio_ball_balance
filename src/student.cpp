@@ -22,6 +22,8 @@ void controllerTick (Overlord &over)
     float carVel = -over.getCarVel ();
     float motorAngle = over.getMotorTheta ();
     float motorVel = over.getMotorVel ();
+
+    float u = over.getSlider(SliderEnum::prog1)/ 1000 * 1.0;
     
-    over.setMotorU (0);
+    over.setMotorU (u);
 }
