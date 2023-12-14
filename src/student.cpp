@@ -18,13 +18,17 @@ void controllerInit (Overlord &over)
 void controllerTick (Overlord &over)
 {
     float setPoint = -over.getSetpoint ();
-    float carX = -over.getCarX ();
-    float carVel = -over.getCarVel ();
+    // float carX = -over.getCarX ();
+    // float carVel = -over.getCarVel ();
     float motorAngle = over.getMotorTheta ();
     float motorVel = over.getMotorVel ();
 
     bool button = !digitalRead(13);
     float u = button * over.getSlider(SliderEnum::prog1)/ 1000 * 1.0;
+
+    Serial.print(u);
+    Serial.print(' ');
+    Serial.println(motorVel);
     
     over.setMotorU (u);
 }

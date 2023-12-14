@@ -63,7 +63,7 @@ void Overlord::tick ()
     timer = micros ();
 
     motor->update ();
-    car->update ();
+    // car->update ();
     
     float sp = getSetpoint ();
     float x = car->getX ();
@@ -78,17 +78,17 @@ void Overlord::tick ()
     ledManager->setSetpointPos (sp);
     ledManager->show ();
 
-    Serial.print (timer/1000);
-    Serial.print (' ');
-    // Serial.print (timeTick);
-    // Serial.print ('\t');
-    Serial.print (sp, 4);
-    Serial.print (' ');
-    Serial.print (x, 4);
-    Serial.print (' ');
-    // Serial.print (u);
+    // Serial.print (timer/1000);
     // Serial.print (' ');
-    Serial.println ();
+    // // Serial.print (timeTick);
+    // // Serial.print ('\t');
+    // Serial.print (sp, 4);
+    // Serial.print (' ');
+    // Serial.print (x, 4);
+    // Serial.print (' ');
+    // // Serial.print (u);
+    // // Serial.print (' ');
+    // Serial.println ();
 
     timeTick++;
     if (timeTick >= sizeof (setPointArray))
