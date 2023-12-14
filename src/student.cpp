@@ -23,7 +23,8 @@ void controllerTick (Overlord &over)
     float motorAngle = over.getMotorTheta ();
     float motorVel = over.getMotorVel ();
 
-    float u = over.getSlider(SliderEnum::prog1)/ 1000 * 1.0;
+    bool button = !digitalRead(13);
+    float u = button * over.getSlider(SliderEnum::prog1)/ 1000 * 1.0;
     
     over.setMotorU (u);
 }
