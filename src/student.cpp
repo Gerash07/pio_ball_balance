@@ -27,12 +27,32 @@ void controllerTick (Overlord &over)
     bool button = !digitalRead(13);
     float w0 = button * over.getSlider(SliderEnum::prog1)* 1.0 / 1000 ;
 
-    float K = 0.68;
-    float Kp = 8;
+    float w, fi, w0, err1, err2;
 
-    float err = w0 - motorVel;
+    static float constexpr T1 = 0,006;
+    static float constexpr Tmu = 0,035;
+    static float constexpr K = 0,68;
 
-    float u = Kp * err;
+
+    static float constexpr Kk = T1/(2*K*Tmu);
+    static float constexpr Kk2 = 8;
+
+
+    // err1 = fi0 - motorAngle;
+    // w0 = Kk2 * err;
+
+    err2 = w0 - motorVel;
+    P = err2*Kk
+
+    static float I = 0;
+    float Iin = err2 * Kk
+    if( constrain(I, -12, 12) == I || Iin*I < 0)
+    {
+        float I += Iin * T1; 
+    }
+
+    float u0 = P+I
+
 
 
     Serial.print(w0);
