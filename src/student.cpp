@@ -15,7 +15,7 @@ void controllerInit (Overlord &over)
  * @brief Выполнить одну итерацию системы управления
  * @details Вызывается раз в 5мс
  */
-float w = 0;
+
 void controllerTick (Overlord &over)
 {
     float setPoint = -over.getSetpoint ();
@@ -27,32 +27,42 @@ void controllerTick (Overlord &over)
     bool button = !digitalRead(13);
     float w0 = button * over.getSlider(SliderEnum::prog1)* 1.0 / 1000 ;
 
-    float w, fi, w0, err1, err2;
+    float w, err1, u;
 
-    static float constexpr T1 = 0,006;
-    static float constexpr Tmu = 0,035;
-    static float constexpr K = 0,68;
+    
 
 
-    static float constexpr Kk = T1/(2*K*Tmu);
-    static float constexpr Kk2 = 8;
+    static float constexpr Ts = 0.006;
 
-
-    // err1 = fi0 - motorAngle;
-    // w0 = Kk2 * err;
-
-    err2 = w0 - motorVel;
-    P = err2*Kk
-
+    static float constexpr Kp = 2;
+    static float constexpr Ki = 4;
     static float I = 0;
-    float Iin = err2 * Kk
-    if( constrain(I, -12, 12) == I || Iin*I < 0)
+    static float P;
+
+
+    // err1 = w0 - motorVel;
+    // P = err1*Kp;
+
+    // err1 = w0 - motorVel;
+    // I += err1*Ki*Ts;
+    // u = I;
+
+    // err1 = w0 - motorVel;
+    // u = I;
+    // if( constrain(u, -12, 12) == I || I*err1*Ki < 0)
+    // {
+    //     I += err1*Ki*Ts;
+    // }
+
+    err1 = w0 - motorVel;
+    float eKp = err1*Kp;
+    u = eKp + I;
+
+    if( u == constrain(u, -12, 12) || I*err1*Ki < 0)
     {
-        float I += Iin * T1; 
+        I += eKp*Ki*Ts;
     }
-
-    float u0 = P+I
-
+    
 
 
     Serial.print(w0);

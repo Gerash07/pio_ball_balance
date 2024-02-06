@@ -54,13 +54,13 @@ void Overlord::tick ()
     bool isTimeOk = false;
     while (micros () - timer < Tsmicros) isTimeOk = true;
 
-    if (!isTimeOk)
-    {
-        unsigned long mcrs = micros ();
-        Serial.print ("ПРЕВЫШЕН ПЕРИОД КВАНТОВАНИЯ НА [мкс]: ");
-        Serial.println (mcrs - timer - Tsmicros);
-    }
-    timer = micros ();
+    // if (!isTimeOk)
+    // {
+    //     unsigned long mcrs = micros ();
+    //     Serial.print ("ПРЕВЫШЕН ПЕРИОД КВАНТОВАНИЯ НА [мкс]: ");
+    //     Serial.println (mcrs - timer - Tsmicros);
+    // }
+    // timer = micros ();
 
     motor->update ();
     // car->update ();
