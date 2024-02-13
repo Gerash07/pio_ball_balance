@@ -16,6 +16,15 @@ void controllerInit (Overlord &over)
  * @details Вызывается раз в 5мс
  */
 
+float step(uint32_t time, uint32_t period, float min_out, float max_out)
+{
+  if(time/period % 2)
+  {
+    return min_out;
+  }
+  return max_out;
+}
+
 void controllerTick (Overlord &over)
 {
     float setPoint = -over.getSetpoint ();
@@ -25,9 +34,9 @@ void controllerTick (Overlord &over)
     float motorVel = over.getMotorVel ();
 
     bool button = !digitalRead(13);
-    float w0 = button * over.getSlider(SliderEnum::prog1)* 1.0 / 1000 ;
+    float u = button * over.getSlider(SliderEnum::prog1)* 1.0 / 1000 ;
 
-    float w, err1, u;
+    float w, err1;
 
     
 
@@ -54,22 +63,31 @@ void controllerTick (Overlord &over)
     //     I += err1*Ki*Ts;
     // }
 
-    err1 = w0 - motorVel;
-    float eKp = err1*Kp;
-    u = eKp + I;
+    // err1 = w0 - motorVel;
+    // float eKp = err1*Kp;
+    // u = eKp + I;
 
-    if( u == constrain(u, -12, 12) || I*err1*Ki < 0)
-    {
-        I += eKp*Ki*Ts;
-    }
-    
+    // if( u == constrain(u, -12, 12) || I*err1*Ki < 0)
+    // {
+    //     I += eKp*Ki*Ts;
+    // }
 
 
-    Serial.print(w0);
-    Serial.print(' ');
+
+    uint32_t time = millis();
+    w = over.getMotorVel();
+
+    u = step(time, 2000, 0, 10); // 0 если время не пришло, 10 если время пришло
+
+
+    Serial.print(time);
+    Serial.print(" ");
     Serial.print(u);
-    Serial.print(' ');
-    Serial.println(motorVel);
+    Serial.print(" ");
+    Serial.println(w);
+
+
+    // Serial.print(' ');
     
     over.setMotorU (u);
 }
