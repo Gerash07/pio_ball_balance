@@ -34,17 +34,18 @@ void controllerTick (Overlord &over)
     float motorVel = over.getMotorVel ();
 
     bool button = !digitalRead(13);
-    float u = button * over.getSlider(SliderEnum::prog1)* 1.0 / 1000 ;
+    float fi0 = button * over.getSlider(SliderEnum::prog1)* 1.0 / 1000 ;
 
-    float w, err1;
+    float w, err1, u, w0, err0;
 
     
 
 
     static float constexpr Ts = 0.006;
 
-    static float constexpr Kp = 2;
-    static float constexpr Ki = 4;
+    static float constexpr Kp = 0.51;
+    static float constexpr Ki = 100;
+    static float constexpr Kpf = 5;
     static float I = 0;
     static float P;
 
@@ -62,29 +63,31 @@ void controllerTick (Overlord &over)
     // {
     //     I += err1*Ki*Ts;
     // }
+    err0 = fi0 - motorAngle;
+    float eKpf = err0 * Kpf;
+    err1 = eKpf - motorVel;
+    float eKpw = err1 * Kp;
+    u = eKpw + I;
 
-    // err1 = w0 - motorVel;
-    // float eKp = err1*Kp;
-    // u = eKp + I;
-
-    // if( u == constrain(u, -12, 12) || I*err1*Ki < 0)
-    // {
-    //     I += eKp*Ki*Ts;
-    // }
-
-
-
-    uint32_t time = millis();
-    w = over.getMotorVel();
-
-    u = step(time, 2000, 0, 10); // 0 если время не пришло, 10 если время пришло
+    if( u == constrain(u, -12, 12) || I*err1*Ki < 0)
+    {
+        I += eKpw*Ki*Ts;
+    }
 
 
-    Serial.print(time);
+
+    // uint32_t time = millis();
+    // w = over.getMotorVel();
+
+    // u = step(time, 2000, 0, 10); // 0 если время не пришло, 10 если время пришло
+
+
+    // Serial.print(time);
+    Serial.print(w0);
     Serial.print(" ");
     Serial.print(u);
     Serial.print(" ");
-    Serial.println(w);
+    Serial.println(motorVel);
 
 
     // Serial.print(' ');
